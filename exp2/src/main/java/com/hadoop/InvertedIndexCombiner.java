@@ -4,7 +4,7 @@ import java.io.IOException;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Reducer;
-public static class InvertedIndexCombiner extends Reducer<Text, IntWritable, Text, Text>{
+public class InvertedIndexCombiner extends Reducer<Text, IntWritable, Text, Text>{
     public void combine(Text key, Iterable<IntWritable> values, Context context)
         throws IOException , InterruptedException
     {
