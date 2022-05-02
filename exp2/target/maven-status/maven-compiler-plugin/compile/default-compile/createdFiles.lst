@@ -1,2 +1,4 @@
-com/hadoop/App.class
-com/hadoop/Map.class
+com/hadoop/InvertedIndexCombiner.class
+com/hadoop/InvertedIndexMapper.class
+com/hadoop/InvertedIndexReducer.class
+com/hadoop/InvertedIndexer.class

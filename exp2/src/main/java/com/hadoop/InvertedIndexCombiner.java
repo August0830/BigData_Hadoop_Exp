@@ -2,15 +2,14 @@ package com.hadoop;
 
 import java.io.IOException;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.mapreduce.Reducer;
-public class InvertedIndexCombiner extends Reducer<Text, IntWritable, Text, Text>{
-    public void combine(Text key, Iterable<IntWritable> values, Context context)
+public class InvertedIndexCombiner extends Reducer<Text, Text, Text, Text>{
+    public void combine(Text key, Iterable<Text> values, Context context)
         throws IOException , InterruptedException
     {
         int sum = 0;
-        for(IntWritable val : values)
-            sum += val.get();
+        for(Text val : values)
+            sum += Integer.parseInt(val.toString());
         String result=Integer.toString(sum);
         int SpilitIndex=key.toString().indexOf(",");
         Text keyout = new Text();

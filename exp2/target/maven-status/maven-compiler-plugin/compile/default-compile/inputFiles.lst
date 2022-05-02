@@ -1,2 +1,4 @@
-/home/njucs/BigData/Exp2/exp2/src/main/java/com/hadoop/App.java
-/home/njucs/BigData/Exp2/exp2/src/main/java/com/hadoop/Map.java
+/home/hadoop/BigData_Hadoop_Exp/exp2/src/main/java/com/hadoop/InvertedIndexMapper.java
+/home/hadoop/BigData_Hadoop_Exp/exp2/src/main/java/com/hadoop/InvertedIndexer.java
+/home/hadoop/BigData_Hadoop_Exp/exp2/src/main/java/com/hadoop/InvertedIndexReducer.java
+/home/hadoop/BigData_Hadoop_Exp/exp2/src/main/java/com/hadoop/InvertedIndexCombiner.java
