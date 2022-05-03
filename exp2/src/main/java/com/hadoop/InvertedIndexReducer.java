@@ -14,7 +14,7 @@ public class InvertedIndexReducer extends Reducer<Text, Text, Text, Text>{
         int cnt = 0;
         for(Text val : values)
         {
-            result += val.toString() + ";";
+            result += val.toString() + "; ";
             int SpilitIndex=val.toString().indexOf(":");
             sum += Integer.parseInt(val.toString().substring(SpilitIndex+1));
             cnt += 1;
@@ -22,7 +22,7 @@ public class InvertedIndexReducer extends Reducer<Text, Text, Text, Text>{
         String average = String.format("%.3f", sum/cnt);
         result = String.valueOf(average + " " + result);
         Text valueout = new Text();
-        valueout.set(result);
+        valueout.set(result.substring(0, result.length()-2));
         context.write(key, valueout);
     }
 }
