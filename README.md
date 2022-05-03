@@ -1,2 +1,2 @@
-# BigData_Hadoop_Exp2
-group work of Hadoop experiment 2 of 2022Spring
+# BigData_Hadoop_Exp
+group work of Hadoop experiment of 2022Spring
