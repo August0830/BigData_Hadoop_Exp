@@ -1,0 +1,6 @@
+com/hadoop/JoinJob2$JoinReducer.class
+com/hadoop/JoinJob2$JoinMapper.class
+com/hadoop/JoinJob1$JoinMapper.class
+com/hadoop/JoinJob1$JoinReducer.class
+com/hadoop/JoinJob2.class
+com/hadoop/JoinJob1.class
