@@ -97,6 +97,7 @@ public class Utils {
                 IOUtils.copyBytes(in, out, 4096, true);
             }
             Utils.deletePath(newPathStr, true);
+            return false;
         }
     }
 }
