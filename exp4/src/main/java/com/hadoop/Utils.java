@@ -15,10 +15,23 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.util.LineReader;
 
 public class Utils {
-    // convert text from file to double value;data transform
-    public static ArrayList<Double> textToArray(Text text) {
+    // convert text from data file to double value;data transform
+    public static ArrayList<Double> textToArrayForDataFile(Text text) {
         ArrayList<Double> list = new ArrayList<>();
-        String[] dataText = text.toString().split(" ");
+        int dataIndex = text.toString().indexOf(":");
+        String data = text.toString().substring(dataIndex+1);
+        String[] dataText = data.split(" ");
+        for (String str : dataText) {
+            list.add(Double.parseDouble(str));
+        }
+        return list;
+    }
+    // convert text from center point file to double value;data transform
+    public static ArrayList<Double> textToArrayForCenterFile(Text text) {
+        ArrayList<Double> list = new ArrayList<>();
+        int dataIndex = text.toString().indexOf(":");
+        String data = text.toString().substring(dataIndex+1);
+        String[] dataText = data.split(",");
         for (String str : dataText) {
             list.add(Double.parseDouble(str));
         }
@@ -44,7 +57,7 @@ public class Utils {
         LineReader lineReader = new LineReader(fsinput, conf);
         Text line = new Text();
         while (lineReader.readLine(line) > 0) {
-            ArrayList<Double> lineData = textToArray(line);
+            ArrayList<Double> lineData = textToArrayForCenterFile(line);
             res.add(lineData);
         }
         lineReader.close();

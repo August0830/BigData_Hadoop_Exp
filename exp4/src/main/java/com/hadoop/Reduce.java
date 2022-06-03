@@ -12,7 +12,7 @@ public class Reduce extends Reducer<IntWritable, Text, IntWritable, Text>{
         ArrayList<ArrayList<Double>> cluster = new ArrayList<ArrayList<Double>>();
         for(Text val:value)
         {
-            ArrayList<Double> p = Utils.textToArray(val);
+            ArrayList<Double> p = Utils.textToArrayForDataFile(val);
             cluster.add(p);
         }
         double[] avg = new double[cluster.get(0).size()];
