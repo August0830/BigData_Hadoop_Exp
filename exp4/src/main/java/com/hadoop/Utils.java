@@ -29,7 +29,9 @@ public class Utils {
     // convert text from center point file to double value;data transform
     public static ArrayList<Double> textToArrayForCenterFile(Text text) {
         ArrayList<Double> list = new ArrayList<>();
-        int dataIndex = text.toString().indexOf(":");
+        int dataIndex = text.toString().indexOf("\t");
+        if(dataIndex==-1)
+            dataIndex = text.toString().indexOf(":");
         String data = text.toString().substring(dataIndex+1);
         String[] dataText = data.split(",");
         for (String str : dataText) {
