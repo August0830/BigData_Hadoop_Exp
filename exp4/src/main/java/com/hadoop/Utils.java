@@ -72,9 +72,9 @@ public class Utils {
         double distance = 0;
         for (int i = 0; i < size; ++i) {
             for (int j = 0; j < dimension; ++j) {
-                double t1 = Math.abs(oldCenters.get(i).get(j));
-                double t2 = Math.abs(newCenters.get(i).get(j));
-                distance += Math.pow(Math.abs(t1 - t2), 2);
+                double t1 = oldCenters.get(i).get(j);
+                double t2 = newCenters.get(i).get(j);
+                distance += Math.pow(t1 - t2, 2);
             }
         }
         if (distance == 0.0) {
