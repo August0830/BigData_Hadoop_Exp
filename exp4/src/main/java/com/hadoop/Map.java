@@ -17,7 +17,7 @@ public class Map extends Mapper <LongWritable, Text, IntWritable, Text>{
     }
 
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        ArrayList<Double> p = Utils.textToArray(value); //current data point
+        ArrayList<Double> p = Utils.textToArrayForDataFile(value); //current data point
         double minDis=Double.MAX_VALUE;
         int index=-1;
         for(int i=0; i<centers.size(); i++) //find the nearest center
