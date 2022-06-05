@@ -35,5 +35,4 @@ public class Map extends Mapper <LongWritable, Text, IntWritable, Text>{
         }
         context.write(new IntWritable(index), value);
     }
-
 }
