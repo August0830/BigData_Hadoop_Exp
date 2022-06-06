@@ -40,7 +40,8 @@ public class KMeans {
         String centerpath = args[0] + "/initial_centers";
         String datasetpath = args[0] + "/dataset.data";
         String outputpath = args[1];
-        while(true)
+        int cnt = 0;
+        while(cnt<10000)
         {
             run(centerpath, datasetpath, outputpath, true);
             if(Utils.compareCenters(centerpath, outputpath))
@@ -48,6 +49,7 @@ public class KMeans {
                 run(centerpath, datasetpath, outputpath, false);
                 break;
             }
+            cnt++;
         }
     }
 }
