@@ -13,8 +13,11 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.util.LineReader;
+import org.slf4j.*;
+import org.slf4j.LoggerFactory;
 
 public class Utils {
+    public static final Logger log = LoggerFactory.getLogger(Utils.class);
     // convert text from data file to double value;data transform
     public static ArrayList<Double> textToArrayForDataFile(Text text) {
         ArrayList<Double> list = new ArrayList<>();
@@ -22,7 +25,12 @@ public class Utils {
         String data = text.toString().substring(dataIndex+1);
         String[] dataText = data.split(" ");
         for (String str : dataText) {
-            list.add(Double.parseDouble(str));
+            log.info(str);
+            if(str.length()!=0 && !str.equals(" "))
+            {
+                list.add(Double.parseDouble(str));
+            }    
+                
         }
         return list;
     }
