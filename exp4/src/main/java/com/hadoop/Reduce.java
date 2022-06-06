@@ -28,7 +28,8 @@ public class Reduce extends Reducer<IntWritable, Text, IntWritable, Text>{
         String center="";
         for(int i=0;i<avg.length;i++)
         {
-            center+=String.valueOf(avg[i]);
+            String str=String.format("%.4f", avg[i]);
+            center+=str;
             if(i<avg.length-1)
                 center+=",";
         }
