@@ -1,4 +1,4 @@
-package com;
+package com.hadoop;
 
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.conf.Configuration;

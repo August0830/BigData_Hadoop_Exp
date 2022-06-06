@@ -1,1 +1,4 @@
-com/hadoop/App.class
+com/hadoop/Map.class
+com/hadoop/KMeans.class
+com/hadoop/Utils.class
+com/hadoop/Reduce.class
