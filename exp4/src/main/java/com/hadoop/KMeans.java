@@ -40,9 +40,10 @@ public class KMeans {
         String initCenterpath = args[0] + "/initial_centers";
         String centerpath = args[1]+"/centers";
         String datasetpath = args[0] + "/dataset.data";
-        String outputpath = args[1];
+        String outputpath = args[1]+"/output";
         int cnt = 0;
         Utils.copyFile(initCenterpath, centerpath);
+
         while(true)
         {
             run(centerpath, datasetpath, outputpath, true);
@@ -51,7 +52,7 @@ public class KMeans {
                 run(centerpath, datasetpath, outputpath, false);
                 break;
             }
-            cnt++;
+            //cnt++;
         }
     }
 }

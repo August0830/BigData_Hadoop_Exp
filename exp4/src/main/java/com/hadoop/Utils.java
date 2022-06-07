@@ -122,7 +122,7 @@ public class Utils {
             }
         }
         if (distance == 0.0) {
-            Utils.deletePath(centerPathStr, false);
+            //Utils.deletePath(centerPathStr, false);
             return true;
         } else {
             Configuration conf = new Configuration();
