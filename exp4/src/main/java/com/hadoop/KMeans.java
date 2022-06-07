@@ -40,7 +40,7 @@ public class KMeans {
         String initCenterpath = args[0] + "/initial_centers";
         String centerpath = args[1]+"/centers";
         String datasetpath = args[0] + "/dataset.data";
-        String outputpath = args[1]+"/output";
+        String outputpath = args[1]+"/output/";
         int cnt = 0;
         Utils.copyFile(initCenterpath, centerpath);
 

@@ -109,7 +109,7 @@ public class Utils {
     // compare centers, whether centers changed
     public static boolean compareCenters(String centerPathStr, String newPathStr) throws IOException {
         List<ArrayList<Double>> oldCenters = Utils.getCenters(centerPathStr, false);
-        List<ArrayList<Double>> newCenters = Utils.getCenters(newPathStr, true);
+        List<ArrayList<Double>> newCenters = Utils.getCenters(newPathStr, false);
 
         int size = oldCenters.size();
         int dimension = oldCenters.get(0).size();
