@@ -125,21 +125,22 @@ public class Utils {
             //Utils.deletePath(centerPathStr, false);
             return true;
         } else {
-            Configuration conf = new Configuration();
-            Path outPath = new Path(centerPathStr);
-            FileSystem fileSystem = outPath.getFileSystem(conf);
+            // Configuration conf = new Configuration();
+            // Path outPath = new Path(centerPathStr);
+            // FileSystem fileSystem = outPath.getFileSystem(conf);
 
-            FSDataOutputStream overWrite = fileSystem.create(outPath, true);
-            overWrite.writeChars("");
-            overWrite.close();
+            // FSDataOutputStream overWrite = fileSystem.create(outPath, true);
+            // overWrite.writeChars("");
+            // overWrite.close();
 
-            Path inPath = new Path(newPathStr);
-            FileStatus[] fileLists = fileSystem.listStatus(inPath);
-            for(int i=0;i<fileLists.length;++i){
-                FSDataOutputStream out = fileSystem.create(outPath);
-                FSDataInputStream in = fileSystem.open(fileLists[i].getPath());
-                IOUtils.copyBytes(in, out, 4096, true);
-            }
+            // Path inPath = new Path(newPathStr);
+            // FileStatus[] fileLists = fileSystem.listStatus(inPath);
+            // for(int i=0;i<fileLists.length;++i){
+            //     FSDataOutputStream out = fileSystem.create(outPath);
+            //     FSDataInputStream in = fileSystem.open(fileLists[i].getPath());
+            //     IOUtils.copyBytes(in, out, 4096, true);
+            // }
+            copyFile(newPathStr,centerPathStr);
             Utils.deletePath(newPathStr, true);
             return false;
         }
