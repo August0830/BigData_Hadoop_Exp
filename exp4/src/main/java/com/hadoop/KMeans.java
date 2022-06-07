@@ -37,11 +37,13 @@ public class KMeans {
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        String centerpath = args[0] + "/initial_centers";
+        String initCenterpath = args[0] + "/initial_centers";
+        String centerpath = args[1]+"/centers";
         String datasetpath = args[0] + "/dataset.data";
         String outputpath = args[1];
         int cnt = 0;
-        while(cnt<10000)
+        Utils.copyFile(initCenterpath, centerpath);
+        while(true)
         {
             run(centerpath, datasetpath, outputpath, true);
             if(Utils.compareCenters(centerpath, outputpath))

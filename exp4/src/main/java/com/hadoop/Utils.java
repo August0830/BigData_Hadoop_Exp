@@ -18,6 +18,27 @@ import org.slf4j.LoggerFactory;
 
 public class Utils {
     public static final Logger log = LoggerFactory.getLogger(Utils.class);
+
+    //copy file
+    public static void copyFile(String from_path, String to_path) throws IOException {
+        Path path_from = new Path(from_path);
+        Path path_to = new Path(to_path);
+        Path path = new Path(from_path);
+        Configuration configuration = new Configuration();
+        // 获取 HDFS 文件系统
+        FileSystem fileSystem = path.getFileSystem(configuration);
+        FSDataInputStream inputStream = fileSystem.open(path_from);
+        LineReader lineReader = new LineReader(inputStream, configuration);
+        FSDataOutputStream outputStream = fileSystem.create(path_to);
+        Text line = new Text();
+        while(lineReader.readLine(line) > 0) {
+        String str = line.toString() + "\n";
+        outputStream.write(str.getBytes());
+        }
+        lineReader.close();
+        outputStream.close();
+    }
+
     // convert text from data file to double value;data transform
     public static ArrayList<Double> textToArrayForDataFile(Text text) {
         ArrayList<Double> list = new ArrayList<>();
