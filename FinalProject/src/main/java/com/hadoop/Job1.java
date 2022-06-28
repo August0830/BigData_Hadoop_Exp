@@ -1,11 +1,14 @@
 package com.hadoop;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.rmi.server.RMIClassLoader;
 
 import javax.naming.Context;
+import javax.xml.stream.events.Namespace;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -20,11 +23,13 @@ import org.apache.hadoop.mapreduce.Reducer;
 public class Job1 {
     public static class Job1Mapper extends Mapper <LongWritable, Text, Text, NullWritable> {
         protected void setup(Context context) throws IOException, InterruptedException {
-            String names = context.getConfiguration().get("namelist");
+            String namesPath = context.getConfiguration().get("namesPath");
             FileSystem fs = FileSystem.get(context.getConfiguration());
-            BufferedReader br = new BufferedReader(new FileReader(names));
+            BufferedReader br = new BufferedReader(new FileReader(namesPath));
             String name;
-            while((name = br.readLine()) != null) DicLibrary.insert(Diclibrary.DEFAULT, name);
+            while((name = br.readLine()) != null){
+                DicLibrary.insert(Diclibrary.DEFAULT, name);
+            }
         }
 
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -32,17 +37,16 @@ public class Job1 {
             Result res = DicAnalysis.parse(line);
             List<Term> terms = res.getTerms();
             StringBuilder sb = new StringBuilder();
-            if(terms.size() > 0)
+            for(int i = 0; i < terms.size(); ++i)
             {
-                for(int i = 0; i < terms.size(); ++i)
-                {
-                    String w = terms.get(i).getName();
-                    String natureStr = terms.get(i).getNatureStr();
-                    if(natureStr.equals("userDefine")) sb.append(w + " ");
+                String w = terms.get(i).getName();
+                String natureStr = terms.get(i).getNatureStr();
+                if(natureStr.equals("userDefine")) {
+                    sb.append(w + " ");
                 }
             }
             String r = sb.length() > 0 ? sb.toString().substring(0, sb.length() - 1) : "";
-            context.write(new Text(RMIClassLoader), NullWritable.get());
+            context.write(new Text(r), NullWritable.get());
         }
     }
 
@@ -61,6 +65,11 @@ public class Job1 {
         job.setReducerClass(Job1Reducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
+
+        String novelPath = args[0] + "/xiyouji_sample";
+        String namesPath = args[0] + "/xiyouji_name_list";
+        conf.set("novelPath", novelPath);
+        conf.set("namesPath", namesPath);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         System.exit(job.waitForCompletion(true)?0:1);
