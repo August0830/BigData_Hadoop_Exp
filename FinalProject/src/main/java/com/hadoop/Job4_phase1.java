@@ -18,10 +18,13 @@ public class Job4_phase1 {
             throws IOException, InterruptedException
         {
             String line=value.toString();
-            int SplitIndex=line.indexOf("\t");
-            String name=line.substring(0, SplitIndex);
-            String list=line.substring(SplitIndex+1);
-            context.write(new Text(name), new Text("1#"+list));
+            if(line != null && line.length() != 0)
+            {
+                int SplitIndex=line.indexOf("\t");
+                String name=line.substring(0, SplitIndex);
+                String list=line.substring(SplitIndex+1);
+                context.write(new Text(name), new Text("1#"+list));
+            }
         }
     }
 
