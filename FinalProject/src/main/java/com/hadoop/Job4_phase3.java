@@ -21,11 +21,14 @@ public class Job4_phase3 {
             throws IOException, InterruptedException
         {
             String line=value.toString();
-            int SplitIndex=line.indexOf("\t");
-            String name=line.substring(0, SplitIndex);
-            int SplitIndex2=line.indexOf("#");
-            double pr=Double.parseDouble(line.substring(SplitIndex+1, SplitIndex2));
-            context.write(new DoubleWritable(pr), new Text(name));
+            if(line != null && line.length() != 0)
+            {
+                int SplitIndex=line.indexOf("\t");
+                String name=line.substring(0, SplitIndex);
+                int SplitIndex2=line.indexOf("#");
+                double pr=Double.parseDouble(line.substring(SplitIndex+1, SplitIndex2));
+                context.write(new DoubleWritable(pr), new Text(name));
+            }
         }
     }
 
@@ -41,7 +44,7 @@ public class Job4_phase3 {
 		    DoubleWritable ib = (DoubleWritable) b;
 		    return ib.compareTo(ia);
 	    }
-}
+    }
 
     public static class Phase3Reducer extends Reducer <Text, Text, Text, Text> {
         protected void reduce(Text key, Iterable<Text> values, Context context)

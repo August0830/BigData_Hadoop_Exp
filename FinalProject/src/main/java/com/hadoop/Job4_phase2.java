@@ -18,21 +18,24 @@ public class Job4_phase2 {
             throws IOException, InterruptedException
         {
             String line=value.toString();
-            int SplitIndex=line.indexOf("\t");
-            String name=line.substring(0, SplitIndex);
-            int SplitIndex2=line.indexOf("#");
-            double pr=Double.parseDouble(line.substring(SplitIndex+1, SplitIndex2));
-            String list=line.substring(SplitIndex2+1);
-            String[] split=list.split("\\|");
-            for(String val:split)
+            if(line != null && line.length() != 0)
             {
-                int SplitIndex3=val.indexOf(",");
-                String val_name=val.substring(0, SplitIndex3);
-                double p=Double.parseDouble(val.substring(SplitIndex3+1));
-                double val_pr=pr*p;
-                context.write(new Text(val_name), new Text(String.valueOf(val_pr)));
+                int SplitIndex=line.indexOf("\t");
+                String name=line.substring(0, SplitIndex);
+                int SplitIndex2=line.indexOf("#");
+                double pr=Double.parseDouble(line.substring(SplitIndex+1, SplitIndex2));
+                String list=line.substring(SplitIndex2+1);
+                String[] split=list.split("\\|");
+                for(String val:split)
+                {
+                    int SplitIndex3=val.indexOf(",");
+                    String val_name=val.substring(0, SplitIndex3);
+                    double p=Double.parseDouble(val.substring(SplitIndex3+1));
+                    double val_pr=pr*p;
+                    context.write(new Text(val_name), new Text(String.valueOf(val_pr)));
+                }
+                context.write(new Text(name), new Text("#"+list));
             }
-            context.write(new Text(name), new Text("#"+list));
         }
     }
 
