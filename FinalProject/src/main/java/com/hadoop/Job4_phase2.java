@@ -62,6 +62,7 @@ public class Job4_phase2 {
         Configuration conf = new Configuration();
         String InputPath=args[0];
         String OutputPath=args[1];
+        String tmpPath = null;
         for(int i=0;i<10;i++)
         {
             Job job = new Job(conf,"job4_phase2");
@@ -73,8 +74,9 @@ public class Job4_phase2 {
             job.setOutputValueClass(Text.class);
             FileInputFormat.addInputPath(job, new Path(InputPath));
             FileOutputFormat.setOutputPath(job, new Path(OutputPath));
-            InputPath=OutputPath;//把输出的地址改成下一次迭代的输入地址
-            OutputPath=InputPath;
+            tmpPath = OutputPath;//把输出的地址改成下一次迭代的输入地址
+            OutputPath = InputPath;
+            InputPath = tmpPath;
             job.waitForCompletion(true);
         }
     }

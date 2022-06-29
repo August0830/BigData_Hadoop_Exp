@@ -5,11 +5,15 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.rmi.server.RMIClassLoader;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.naming.Context;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -28,7 +32,7 @@ public class Job2 {
             for(String n1 : set){
                 for(String n2 : set){
                     if(n1.equals(n2)) continue;
-                    else context.write(new Text(name + "," + n2), new IntWritable(1));
+                    else context.write(new Text(n1 + "," + n2), new IntWritable(1));
                 }
             }
         }
@@ -37,7 +41,7 @@ public class Job2 {
     public static class Job2Reducer extends Reducer <Text, IntWritable, Text, IntWritable> {
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int cnt = 0;
-            for(IntWritable v : values) cnt += i.get();
+            for(IntWritable v : values) cnt += v.get();
             context.write(key, IntWritable.get(cnt));
         }
     }

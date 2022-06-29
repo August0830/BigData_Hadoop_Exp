@@ -2,8 +2,32 @@ package com.hadoop;
 
 import org.apache.hadoop.mapreduce.Job;
 
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import com.hadoop.Job1.Job1Mapper;
+import com.hadoop.Job1.Job1Reducer;
+import com.hadoop.Job2.Job2Mapper;
+import com.hadoop.Job2.Job2Reducer;
+import com.hadoop.Job3.Job3Mapper;
+import com.hadoop.Job3.Job3Reducer;
+import com.hadoop.Job4_phase1.Phase1Mapper;
+import com.hadoop.Job4_phase1.Phase1Reducer;
+import com.hadoop.Job4_phase2.Phase2Mapper;
+import com.hadoop.Job4_phase2.Phase2Reducer;
+import com.hadoop.Job4_phase3.Phase3Mapper;
+import com.hadoop.Job4_phase3.Phase3Reducer;
+
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.DoubleWritable;
+
+import org.apache.hadoop.io.Text;
+
 public class ProjectMain {
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException{
         Configuration conf = new Configuration();
         Job job1 = new Job(conf,"job1");
         job1.setJarByClass(Job1.class);
@@ -64,6 +88,7 @@ public class ProjectMain {
         int loopTimes = 10;
         String InputPath=args[1] + "/job4_1Data.txt";
         String OutputPath=args[1] + "/job4_2Data.txt";
+        String tmpPath = null;
         for(int i=0;i<loopTimes;i++)
         {
             Job job4_2 = new Job(conf,"job4_phase2");
@@ -75,11 +100,16 @@ public class ProjectMain {
             job4_2.setOutputValueClass(Text.class);
             FileInputFormat.addInputPath(job4_2, new Path(InputPath));
             FileOutputFormat.setOutputPath(job4_2, new Path(OutputPath));
-            InputPath=OutputPath;//把输出的地址改成下一次迭代的输入地址
-            OutputPath=InputPath;
+            tmpPath = OutputPath;//把输出的地址改成下一次迭代的输入地址
+            OutputPath = InputPath;
+            InputPath = tmpPath;
             job4_2.waitForCompletion(true);
         }
-        
+        if(loopTimes%2==1)
+            OutputPath = args[1] + "/job4_2Data.txt";
+        else
+            OutputPath = args[1] + "/job4_1Data.txt";
+
         Job job4_3 = new Job(conf,"job4_phase3");
         String job4_3Data = args[1] + "/job4_3Data.txt";
         job4_3.setJarByClass(Job4_phase3.class);
