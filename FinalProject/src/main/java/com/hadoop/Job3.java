@@ -1,6 +1,7 @@
 package com.hadoop;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -18,12 +19,15 @@ public class Job3 {
             throws IOException, InterruptedException
         {
             String line = value.toString();
-            int SplitIndex=line.indexOf(",");
-            String name1=line.substring(0, SplitIndex);
-            int SplitIndex2=line.indexOf("\t");
-            String name2=line.substring(SplitIndex+1, SplitIndex2);
-            String frequency=line.substring((SplitIndex2+1));
-            context.write(new Text(name1), new Text(name2+","+frequency));
+            if(line != null && line.length() != 0)
+            {
+                int SplitIndex=line.indexOf(",");
+                String name1=line.substring(0, SplitIndex);
+                int SplitIndex2=line.indexOf("\t");
+                String name2=line.substring(SplitIndex+1, SplitIndex2);
+                String frequency=line.substring((SplitIndex2+1));
+                context.write(new Text(name1), new Text(name2+","+frequency));
+            }
         }
     }
 
@@ -33,21 +37,26 @@ public class Job3 {
         {
             double sum=0.0;
             String output="";
+            ArrayList<String> s = new ArrayList<String>();
             for(Text val:values)
             {
-                int SplitIndex=val.toString().indexOf(",");
-                double frequency=Double.parseDouble(val.toString().substring(SplitIndex+1));
+                s.add(val.toString());
+            }
+            for(int i=0;i<s.size();i++)
+            {
+                int SplitIndex=s.get(i).indexOf(",");
+                double frequency=Double.parseDouble(s.get(i).substring(SplitIndex+1));
                 sum+=frequency;
             }
-            for(Text val:values)
+            for(int i=0;i<s.size();i++)
             {
-                int SplitIndex=val.toString().indexOf(",");
-                String name=val.toString().substring(0, SplitIndex);
-                double frequency=Double.parseDouble(val.toString().substring(SplitIndex+1));
+                int SplitIndex=s.get(i).indexOf(",");
+                String name=s.get(i).substring(0, SplitIndex);
+                double frequency=Double.parseDouble(s.get(i).substring(SplitIndex+1));
                 double p=frequency/sum;
                 output+=name+","+String.valueOf(p)+"|";
             }
-            context.write(key, new Text(output.substring(0,output.length()-1)));
+            context.write(key, new Text(output.substring(0, output.length()-1)));
         }
     }
 
