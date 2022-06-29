@@ -6,8 +6,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.WritableComparable;
-import org.apache.hadoop.io.WritableComparator;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
@@ -32,27 +30,13 @@ public class Job4_phase3 {
         }
     }
 
-
-    public class DoubleWritableComparator extends WritableComparator {
-	    public DoubleWritableComparator() {
-		    super(DoubleWritable.class, true);
-	    }
-	
-	    @Override
-	    public int compare(WritableComparable a, WritableComparable b) {
-		    DoubleWritable ia = (DoubleWritable) a;
-		    DoubleWritable ib = (DoubleWritable) b;
-		    return ib.compareTo(ia);
-	    }
-    }
-
-    public static class Phase3Reducer extends Reducer <Text, Text, Text, Text> {
-        protected void reduce(Text key, Iterable<Text> values, Context context)
+    public static class Phase3Reducer extends Reducer <DoubleWritable, Text, DoubleWritable, Text> {
+        protected void reduce(DoubleWritable key, Iterable<Text> values, Context context)
             throws IOException, InterruptedException
         {
             for(Text val:values)
             {
-                context.write(val, key);
+                context.write(key, val);
             }
         }
     }
@@ -64,12 +48,10 @@ public class Job4_phase3 {
         job.setInputFormatClass(TextInputFormat.class);
         job.setMapperClass(Phase3Mapper.class);
         job.setReducerClass(Phase3Reducer.class);
-        job.setSortComparatorClass(DoubleWritableComparator.class);
-        job.setOutputKeyClass(Text.class);
+        job.setOutputKeyClass(DoubleWritable.class);
         job.setOutputValueClass(Text.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         System.exit(job.waitForCompletion(true)?0:1);
     }
 }
-
