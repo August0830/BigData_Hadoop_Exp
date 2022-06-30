@@ -16,6 +16,7 @@ import com.hadoop.Job4_phase1.Phase1Mapper;
 import com.hadoop.Job4_phase1.Phase1Reducer;
 import com.hadoop.Job4_phase2.Phase2Mapper;
 import com.hadoop.Job4_phase2.Phase2Reducer;
+import com.hadoop.Job4_phase3.DescSort;
 import com.hadoop.Job4_phase3.Phase3Mapper;
 import com.hadoop.Job4_phase3.Phase3Reducer;
 
@@ -113,6 +114,7 @@ public class ProjectMain {
         Job job4_3 = new Job(conf,"job4_phase3");
         String job4_3Data = args[1] + "/job4_3Data.txt";
         job4_3.setJarByClass(Job4_phase3.class);
+        job4_3.setSortComparatorClass(DescSort.class);
         job4_3.setInputFormatClass(TextInputFormat.class);
         job4_3.setMapperClass(Phase3Mapper.class);
         job4_3.setReducerClass(Phase3Reducer.class);
