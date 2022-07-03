@@ -1,15 +1,10 @@
 package com.hadoop;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.rmi.server.RMIClassLoader;
+import java.io.InputStreamReader;
 import java.util.*;
-
-import javax.naming.Context;
-import javax.xml.stream.events.Namespace;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
@@ -22,38 +17,39 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-
-import org.ansj.demo;
-import org.ansj.domain.Result;
-import org.ansj.domain.Term;
-import org.ansj.library.DicLibrary;
-import org.ansj.splitWord.analysis.ToAnalysis;
+import org.apache.hadoop.util.LineReader;
 
 public class Job1 {
     public static class Job1Mapper extends Mapper<LongWritable, Text, Text, NullWritable> {
+        ArrayList<String> names = new ArrayList<String>();
+
         protected void setup(Context context) throws IOException, InterruptedException {
-            String namesPath = context.getConfiguration().get("namesPath");
-            FileSystem fs = FileSystem.get(context.getConfiguration());
-            BufferedReader br = new BufferedReader(new FileReader(namesPath));
-            String name;
-            while ((name = br.readLine()) != null) {
-                DicLibrary.insert(Diclibrary.DEFAULT, name);
+            Path path = new Path(context.getConfiguration().get("namesPath"));
+            Configuration conf = new Configuration();
+            FileSystem fileSystem = path.getFileSystem(conf);
+            FSDataInputStream fsis = fileSystem.open(path);
+            LineReader lineReader = new LineReader(fsis, conf);
+
+            Text line = new Text();
+            while (lineReader.readLine(line) > 0) {
+                names.add(line.toString());
             }
+            lineReader.close();
         }
 
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String line = value.toString();
-            Result res = DicAnalysis.parse(line);
-            List<Term> terms = res.getTerms();
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < terms.size(); ++i) {
-                String w = terms.get(i).getName();
-                String natureStr = terms.get(i).getNatureStr();
-                if (natureStr.equals("userDefine")) {
-                    sb.append(w + " ");
-                }
+            int len = line.length();
+            String r = "";
+            for (int i = 0; i < names.size(); ++i) {
+                String s = names.get(i);
+                line = line.replace(s, "");
+                int n = (len - line.length()) / s.length();
+                for (int j = 0; j < n; ++j)
+                    r = r + s + " ";
             }
-            String r = sb.length() > 0 ? sb.toString().substring(0, sb.length() - 1) : "";
+            if (r.length() > 0)
+                r = r.substring(0, r.length() - 1);
             context.write(new Text(r), NullWritable.get());
         }
     }
@@ -67,19 +63,18 @@ public class Job1 {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
+        String novelPath = args[0] + "xiyouji/";
+        String namesPath = args[0] + "xiyouji_name_list.txt";
+        conf.set("namesPath", namesPath);
+
         Job job = new Job(conf, "job1");
         job.setJarByClass(Job1.class);
         job.setInputFormatClass(TextInputFormat.class);
         job.setMapperClass(Job1Mapper.class);
         job.setReducerClass(Job1Reducer.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
-
-        String novelPath = args[0] + "/xiyouji_sample";
-        String namesPath = args[0] + "/xiyouji_name_list.txt";
-        conf.set("novelPath", novelPath);
-        conf.set("namesPath", namesPath);
-        FileInputFormat.addInputPath(job, new Path(args[0]));
+        job.setOutputValueClass(NullWritable.class);
+        FileInputFormat.addInputPath(job, new Path(novelPath));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
