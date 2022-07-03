@@ -6,6 +6,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.WritableComparator;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
@@ -30,6 +31,21 @@ public class Job4_phase3 {
         }
     }
 
+    public static class DescSort extends WritableComparator{
+        public DescSort() {
+            super(DoubleWritable.class,true);
+       }
+        @Override
+       public int compare(byte[] arg0, int arg1, int arg2, byte[] arg3, int arg4, int arg5) {
+           return -super.compare(arg0, arg1, arg2, arg3, arg4, arg5);
+       }
+        @Override
+       public int compare(Object a, Object b) {
+           return   -super.compare(a, b);
+       }
+   }
+
+
     public static class Phase3Reducer extends Reducer <DoubleWritable, Text, DoubleWritable, Text> {
         protected void reduce(DoubleWritable key, Iterable<Text> values, Context context)
             throws IOException, InterruptedException
@@ -45,6 +61,7 @@ public class Job4_phase3 {
         Configuration conf = new Configuration();
         Job job = new Job(conf,"job4_phase3");
         job.setJarByClass(Job4_phase3.class);
+        job.setSortComparatorClass(DescSort.class);
         job.setInputFormatClass(TextInputFormat.class);
         job.setMapperClass(Phase3Mapper.class);
         job.setReducerClass(Phase3Reducer.class);
