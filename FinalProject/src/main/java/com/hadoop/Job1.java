@@ -1,9 +1,6 @@
 package com.hadoop;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 
 import org.apache.hadoop.conf.Configuration;
@@ -39,18 +36,20 @@ public class Job1 {
 
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String line = value.toString();
-            int len = line.length();
             String r = "";
             for (int i = 0; i < names.size(); ++i) {
                 String s = names.get(i);
-                line = line.replace(s, "");
-                int n = (len - line.length()) / s.length();
-                for (int j = 0; j < n; ++j)
+                int slen = s.length();
+                int j = 0;
+                while ((j = line.indexOf(s, j)) != -1) {
                     r = r + s + " ";
+                    j = j + slen;
+                }
             }
-            if (r.length() > 0)
+            if (r.length() > 0) {
                 r = r.substring(0, r.length() - 1);
-            context.write(new Text(r), NullWritable.get());
+                context.write(new Text(r), NullWritable.get());
+            }
         }
     }
 
@@ -61,12 +60,26 @@ public class Job1 {
         }
     }
 
+    public static void run(String novelPath, String namesPath, String outputPath) throws Exception {
+        Configuration conf = new Configuration();
+        conf.set("namesPath", namesPath);
+        Job job = new Job(conf, "job1");
+        job.setJarByClass(Job1.class);
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setMapperClass(Job1Mapper.class);
+        job.setReducerClass(Job1Reducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(NullWritable.class);
+        FileInputFormat.addInputPath(job, new Path(novelPath));
+        FileOutputFormat.setOutputPath(job, new Path(outputPath));
+        job.waitForCompletion(true);
+    }
+
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        String novelPath = args[0] + "xiyouji/";
-        String namesPath = args[0] + "xiyouji_name_list.txt";
+        String novelPath = args[0] + "/xiyouji_sample";
+        String namesPath = args[0] + "/xiyouji_name_list.txt";
         conf.set("namesPath", namesPath);
-
         Job job = new Job(conf, "job1");
         job.setJarByClass(Job1.class);
         job.setInputFormatClass(TextInputFormat.class);
