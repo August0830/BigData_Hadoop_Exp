@@ -75,6 +75,7 @@ public class ProjectMain {
             job4_2.setOutputValueClass(Text.class);
             FileInputFormat.addInputPath(job4_2, new Path(InputPath));
             FileOutputFormat.setOutputPath(job4_2, new Path(OutputPath));
+            job4_2.waitForCompletion(true);
             fs.delete(new Path(InputPath), true);
             fs.rename(new Path(OutputPath), new Path(InputPath));
         }
@@ -82,7 +83,7 @@ public class ProjectMain {
         //思路：对结果文件夹打开文件系统进行操作，
         //迭代一次后删除旧的文件；把新文件命名成旧文件同名，
         //保证下一次生成的时候新文件名不会已经存在
-        OutputPath = args[1] + "/job4_2Data_0";
+        //OutputPath = InputPath;
         Job job4_3 = new Job(conf, "job4_phase3");
         String job4_3Data = args[1] + "/job4_3Data";
         job4_3.setJarByClass(Job4_phase3.class);
@@ -92,7 +93,7 @@ public class ProjectMain {
         job4_3.setReducerClass(Phase3Reducer.class);
         job4_3.setOutputKeyClass(DoubleWritable.class);
         job4_3.setOutputValueClass(Text.class);
-        FileInputFormat.addInputPath(job4_3, new Path(OutputPath));
+        FileInputFormat.addInputPath(job4_3, new Path(InputPath));
         FileOutputFormat.setOutputPath(job4_3, new Path(job4_3Data));
         System.exit(job4_3.waitForCompletion(true) ? 0 : 1);
     }
