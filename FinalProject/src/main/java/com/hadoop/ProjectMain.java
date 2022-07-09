@@ -18,6 +18,7 @@ import com.hadoop.Job4_phase3.Phase3Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.tools.ant.taskdefs.Input;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
@@ -62,10 +63,9 @@ public class ProjectMain {
         int loopTimes = 10;
         String InputPath = args[1] + "/job4_1Data_0";
         String OutputPath = args[1] + "/job4_2Data_0";
-        String tmpPath = null;
+        Configuration conf4_2 = new Configuration();
+        FileSystem fs = new Path(args[1]).getFileSystem(conf4_2);
         for (int i = 0; i < loopTimes; i++) {
-            OutputPath = OutputPath.substring(0, OutputPath.length() - 1);
-            OutputPath = OutputPath + String.valueOf(i);
             Job job4_2 = new Job(conf, "job4_phase2");
             job4_2.setJarByClass(Job4_phase2.class);
             job4_2.setInputFormatClass(TextInputFormat.class);
@@ -75,13 +75,14 @@ public class ProjectMain {
             job4_2.setOutputValueClass(Text.class);
             FileInputFormat.addInputPath(job4_2, new Path(InputPath));
             FileOutputFormat.setOutputPath(job4_2, new Path(OutputPath));
-            tmpPath = OutputPath;// 把输出的地址改成下一次迭代的输入地址
-            OutputPath = InputPath;
-            InputPath = tmpPath;
-            job4_2.waitForCompletion(true);
+            fs.delete(new Path(InputPath), true);
+            fs.rename(new Path(OutputPath), new Path(InputPath));
         }
-        OutputPath = args[1] + "/job4_1Data_9";
-
+        // OutputPath = args[1] + "/job4_1Data_9";
+        //思路：对结果文件夹打开文件系统进行操作，
+        //迭代一次后删除旧的文件；把新文件命名成旧文件同名，
+        //保证下一次生成的时候新文件名不会已经存在
+        OutputPath = args[1] + "/job4_2Data_0";
         Job job4_3 = new Job(conf, "job4_phase3");
         String job4_3Data = args[1] + "/job4_3Data";
         job4_3.setJarByClass(Job4_phase3.class);
